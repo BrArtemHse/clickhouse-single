@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "clickhouse-single.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "clickhouse-single.name" . }}
+    helm.sh/chart: {{ include "clickhouse-single.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  # Service для доступа к ClickHouse по TCP и HTTP
+  type: {{ .Values.service.type }}
+  selector:
+    app.kubernetes.io/name: {{ include "clickhouse-single.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  ports:
+    - name: tcp-native          # нативный протокол ClickHouse
+      port: {{ .Values.service.port }}
+      targetPort: 9000
+    - name: http                # HTTP-интерфейс ClickHouse
+      port: {{ .Values.service.httpPort }}
+      targetPort: 8123

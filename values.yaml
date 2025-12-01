@@ -1,0 +1,43 @@
+# Общие настройки образа ClickHouse
+image:
+  repository: clickhouse/clickhouse-server    # Официальный образ ClickHouse
+  tag: "24.3"                                  # Версию можно переопределить при установке
+  pullPolicy: IfNotPresent
+
+# Параметры statefulset / pod
+replicaCount: 1                                 # Single-инсталляция: ровно один pod
+
+service:
+  type: ClusterIP
+  port: 9000            # Native TCP
+  httpPort: 8123        # HTTP-порт ClickHouse
+
+# Список пользователей ClickHouse.
+clickhouse:
+  users:
+    - name: "app_user"
+      password: "app_password"
+      profile: "default"
+      quota: "default"
+      networks:
+        - "::/0"        # Разрешён любой IP (для простоты примера)
+
+# Настройки persistent volume
+persistence:
+  enabled: true
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  storageClassName: ""   # Можно переопределить значением storageClass кластера
+
+# Ресурсы по умолчанию (минимальные для примера)
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "1"
+    memory: "2Gi"
+
+# Дополнительные аннотации (если нужны, можно оставить пустыми)
+podAnnotations: {}

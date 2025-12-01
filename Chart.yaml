@@ -1,0 +1,6 @@
+apiVersion: v2
+name: clickhouse-single
+description: Simple single-node ClickHouse deployment in Kubernetes
+type: application
+version: 0.1.0            # Версия чарта
+appVersion: "24.3"        # Дефолтная версия ClickHouse (можно переопределить в values.yaml)

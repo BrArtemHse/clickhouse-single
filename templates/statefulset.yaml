@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "clickhouse-single.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "clickhouse-single.name" . }}
+    helm.sh/chart: {{ include "clickhouse-single.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  # Single-инсталляция -> одна реплика
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "clickhouse-single.fullname" . }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "clickhouse-single.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "clickhouse-single.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+      annotations:
+        # Пользовательские аннотации из values.yaml (если заданы)
+        {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      containers:
+        - name: clickhouse
+          # Образ и версия задаются через values.yaml
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 9000
+              name: tcp-native
+            - containerPort: 8123
+              name: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          volumeMounts:
+            # Основное хранилище данных ClickHouse
+            - name: data
+              mountPath: /var/lib/clickhouse
+            # Конфигурация пользователей (secret → файл /etc/clickhouse-server/users.d/users.xml)
+            - name: users-config
+              mountPath: /etc/clickhouse-server/users.d/users.xml
+              subPath: users.xml   # Берём только один файл из секретa
+
+      volumes:
+        # Secret с users.xml
+        - name: users-config
+          secret:
+            secretName: {{ include "clickhouse-single.fullname" . }}-users
+
+  volumeClaimTemplates:
+    # PVC для хранения данных ClickHouse
+    - metadata:
+        name: data
+      spec:
+        accessModes: {{ toYaml .Values.persistence.accessModes | nindent 8 }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+        {{- if .Values.persistence.storageClassName }}
+        storageClassName: {{ .Values.persistence.storageClassName }}
+        {{- end }}
