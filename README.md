@@ -124,12 +124,12 @@ clickhouse:
 
 ### Подключение к ClickHouse
 
-Откройте порт:
+Откройте порт (не закрывать):
 ```
 kubectl port-forward -n clickhouse svc/clickhouse-clickhouse-single 8123:8123
 ```
 
-Выполните запрос:
+Выполните запрос (в другом окне):
 ```
 curl "http://localhost:8123/?query=SELECT%201" \
   --user app_user:app_password
@@ -150,6 +150,7 @@ helm upgrade clickhouse . -n clickhouse
 helm uninstall clickhouse -n clickhouse
 kubectl delete namespace clickhouse
 ```
+
 
 
 
