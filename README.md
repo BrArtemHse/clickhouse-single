@@ -138,6 +138,7 @@ curl "http://localhost:8123/?query=SELECT%201" \
 helm upgrade clickhouse . -n clickhouse
 
 Удаление
-helm uninstall clickhouse -n clickhouse
+helm uninstall clickhouse -n clickhouse \n
 kubectl delete namespace clickhouse
+
 
