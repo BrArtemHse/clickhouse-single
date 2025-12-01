@@ -1,21 +1,26 @@
 Репозиторий содержит Helm-чарт для развёртывания одиночной инсталляции ClickHouse в Kubernetes.
+
 Чарт полностью параметризован и позволяет задавать:
+
 версию ClickHouse;
+
 список пользователей и их параметры;
+
 размер и класс хранилища (PVC);
+
 ресурсы контейнера.
-Подходит для локальных кластеров (Minikube, k3d), тестовых стендов и CI.
 
-1. Установка зависимостей (Ubuntu)
+Решение подходит для локальных кластеров (Minikube, k3d) и тестовых сред (CI).
 
-1. Docker
+📦 Установка зависимостей (Ubuntu)
+🔧 Docker
 sudo apt update
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 newgrp docker
 docker ps
 
-2. Установка kubectl
+🔧 kubectl
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key \
   | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
 
@@ -26,7 +31,7 @@ https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" \
 sudo apt update
 sudo apt install -y kubectl
 
-Minikube (локальный Kubernetes)
+🧩 Minikube (локальный Kubernetes)
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
@@ -35,11 +40,11 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
 minikube version
 
-3. Helm 3
+🧰 Helm 3
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm version
 
-2. Запуск Kubernetes-кластера
+☸️ Запуск Kubernetes-кластера
 minikube start --driver=docker --cpus=2 --memory=4g
 
 
@@ -47,7 +52,7 @@ minikube start --driver=docker --cpus=2 --memory=4g
 
 kubectl get nodes
 
-3. Установка ClickHouse
+🚀 Установка ClickHouse
 
 Перейдите в каталог чарта:
 
@@ -64,7 +69,7 @@ kubectl create namespace clickhouse
 helm install clickhouse . --namespace clickhouse
 
 
-Проверьте pod:
+Проверьте Pod:
 
 kubectl get pods -n clickhouse
 
@@ -73,12 +78,13 @@ kubectl get pods -n clickhouse
 
 clickhouse-clickhouse-single-0   1/1   Running
 
-Настройка через values.yaml
-
+⚙️ Настройка через values.yaml
 1. Версия ClickHouse
 image:
   repository: clickhouse/clickhouse-server
   tag: "24.3"
+
+
 Можно указать при установке:
 
 helm install clickhouse . -n clickhouse --set image.tag=24.8
@@ -104,18 +110,18 @@ clickhouse:
         - "10.0.0.0/8"
 
 
-Чарт сам сгенерирует users.xml и смонтирует его в:
+Чарт автоматически сгенерирует users.xml и смонтирует его в:
 
 /etc/clickhouse-server/users.d/users.xml
 
-Подключение к ClickHouse
+🔌 Подключение к ClickHouse
 
 Откройте порт:
 
 kubectl port-forward -n clickhouse svc/clickhouse-clickhouse-single 8123:8123
 
 
-И выполните запрос:
+Выполните запрос:
 
 curl "http://localhost:8123/?query=SELECT%201" \
   --user app_user:app_password
@@ -125,13 +131,12 @@ curl "http://localhost:8123/?query=SELECT%201" \
 
 1
 
-Обновление чарта
+🔄 Обновление чарта
 
-После изменения values.yaml:
+После изменения values.yaml запустите:
 
 helm upgrade clickhouse . -n clickhouse
 
-Удаление
+🗑 Удаление
 helm uninstall clickhouse -n clickhouse
 kubectl delete namespace clickhouse
-
