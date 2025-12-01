@@ -10,7 +10,7 @@
 
 ресурсы контейнера.
 
-Решение подходит для локальных кластеров (Minikube, k3d) и тестовых сред (CI).
+Решение подходит для локальных кластеров и тестовых сред.
 
 Установка зависимостей (Ubuntu)
 
@@ -150,6 +150,7 @@ helm upgrade clickhouse . -n clickhouse
 helm uninstall clickhouse -n clickhouse
 kubectl delete namespace clickhouse
 ```
+
 
 
 
