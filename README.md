@@ -12,15 +12,16 @@
 
 Решение подходит для локальных кластеров (Minikube, k3d) и тестовых сред (CI).
 
-📦 Установка зависимостей (Ubuntu)
-🔧 Docker
+Установка зависимостей (Ubuntu)
+
+Docker
 sudo apt update
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 newgrp docker
 docker ps
 
-🔧 kubectl
+kubectl
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key \
   | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
 
@@ -31,20 +32,19 @@ https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /" \
 sudo apt update
 sudo apt install -y kubectl
 
-🧩 Minikube (локальный Kubernetes)
+Minikube (локальный Kubernetes)
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
 
 Проверка:
 
 minikube version
 
-🧰 Helm 3
+Helm 3
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm version
 
-☸️ Запуск Kubernetes-кластера
+Запуск Kubernetes-кластера
 minikube start --driver=docker --cpus=2 --memory=4g
 
 
@@ -52,7 +52,7 @@ minikube start --driver=docker --cpus=2 --memory=4g
 
 kubectl get nodes
 
-🚀 Установка ClickHouse
+Установка ClickHouse
 
 Перейдите в каталог чарта:
 
@@ -78,7 +78,7 @@ kubectl get pods -n clickhouse
 
 clickhouse-clickhouse-single-0   1/1   Running
 
-⚙️ Настройка через values.yaml
+Настройка через values.yaml
 1. Версия ClickHouse
 image:
   repository: clickhouse/clickhouse-server
@@ -114,7 +114,7 @@ clickhouse:
 
 /etc/clickhouse-server/users.d/users.xml
 
-🔌 Подключение к ClickHouse
+Подключение к ClickHouse
 
 Откройте порт:
 
@@ -131,12 +131,13 @@ curl "http://localhost:8123/?query=SELECT%201" \
 
 1
 
-🔄 Обновление чарта
+Обновление чарта
 
 После изменения values.yaml запустите:
 
 helm upgrade clickhouse . -n clickhouse
 
-🗑 Удаление
+Удаление
 helm uninstall clickhouse -n clickhouse
 kubectl delete namespace clickhouse
+
