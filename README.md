@@ -6,16 +6,16 @@
 ресурсы контейнера.
 Подходит для локальных кластеров (Minikube, k3d), тестовых стендов и CI.
 
-Установка зависимостей (Ubuntu)
+1. Установка зависимостей (Ubuntu)
 
-Docker
+1. Docker
 sudo apt update
 sudo apt install -y docker.io
 sudo usermod -aG docker $USER
 newgrp docker
 docker ps
 
-Установка kubectl
+2. Установка kubectl
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key \
   | sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
 
@@ -35,11 +35,11 @@ sudo install minikube-linux-amd64 /usr/local/bin/minikube
 
 minikube version
 
-Helm 3
+3. Helm 3
 curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 helm version
 
-Запуск Kubernetes-кластера
+2. Запуск Kubernetes-кластера
 minikube start --driver=docker --cpus=2 --memory=4g
 
 
@@ -47,7 +47,7 @@ minikube start --driver=docker --cpus=2 --memory=4g
 
 kubectl get nodes
 
-Установка ClickHouse
+3. Установка ClickHouse
 
 Перейдите в каталог чарта:
 
@@ -134,3 +134,4 @@ helm upgrade clickhouse . -n clickhouse
 Удаление
 helm uninstall clickhouse -n clickhouse
 kubectl delete namespace clickhouse
+
